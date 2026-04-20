@@ -29,7 +29,7 @@ export default async function AdminClaimsPage() {
   const { organization, claims } = await getClaimsData();
 
   type Claim = (typeof claims)[number];
-  const pending = claims.filter((c: Claim) => c.claimStatus === "SUBMITTED" || c.claimStatus === "UNDER_REVIEW");
+  const pending: Claim[] = claims.filter((c: Claim) => c.claimStatus === "SUBMITTED" || c.claimStatus === "UNDER_REVIEW");
 
   return (
     <AdminShell organizationName={organization?.name} title="Death Benefit Claims">
