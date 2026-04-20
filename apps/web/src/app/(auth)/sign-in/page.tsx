@@ -58,7 +58,7 @@ export default function SignInPage({ searchParams }: SignInPageProps) {
 
                 <div className="mt-8 rounded-xl border border-green-700/60 bg-green-800/60 p-4">
                   <p className="font-display text-sm italic text-cream-300 leading-relaxed">
-                    "{publicSite.mottoAmharic}"
+                    &ldquo;{publicSite.mottoAmharic}&rdquo;
                   </p>
                   <p className="mt-2 text-xs text-green-400 italic">
                     {publicSite.mottoEnglish}

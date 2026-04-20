@@ -37,7 +37,7 @@ export async function reviewClaim(_prev: ClaimActionResult, formData: FormData):
   await prisma.deathClaim.update({
     where: { id: claimId },
     data: {
-      claimStatus: newStatus as any,
+      claimStatus: newStatus as import("@prisma/client").ClaimStatus,
       approvedById: action === "approve" ? user.id : undefined,
       paidAt: action === "pay" ? new Date() : undefined,
       reviewNotes: reviewNotes || undefined

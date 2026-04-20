@@ -6,7 +6,7 @@ type FormState = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
   const [state, setState] = useState<FormState>("idle");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,7 +37,7 @@ export function ContactForm() {
       <div className="rounded-md border border-teal-200 bg-teal-50 p-6 text-center">
         <p className="text-base font-bold text-teal-900">Message sent!</p>
         <p className="mt-2 text-sm text-teal-700">
-          Thank you for reaching out. We'll get back to you by email or phone within a few business days.
+          Thank you for reaching out. We&apos;ll get back to you by email or phone within a few business days.
         </p>
         <button
           onClick={() => setState("idle")}

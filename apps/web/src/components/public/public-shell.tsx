@@ -142,7 +142,7 @@ export function PublicShell({ children, lang = "en" }: { children: React.ReactNo
 
             <div className="px-5 pb-5">
               <p className="text-center text-xs text-ink-muted leading-relaxed font-display italic">
-                "{publicSite.mottoEnglish}"
+                &ldquo;{publicSite.mottoEnglish}&rdquo;
               </p>
             </div>
           </aside>

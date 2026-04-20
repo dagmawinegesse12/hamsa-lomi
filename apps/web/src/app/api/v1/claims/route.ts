@@ -11,7 +11,7 @@ export const GET = withRole(["SUPER_ADMIN", "ADMIN", "TREASURER", "SECRETARY"], 
   const skip = (page - 1) * limit;
   const status = params.get("status") ?? undefined;
 
-  const where = status ? { claimStatus: status as any } : {};
+  const where = status ? { claimStatus: status as import("@prisma/client").ClaimStatus } : {};
 
   const [items, total] = await Promise.all([
     prisma.deathClaim.findMany({
