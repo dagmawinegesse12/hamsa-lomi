@@ -37,7 +37,7 @@ export default async function AdminClaimsPage() {
         <section className="mb-8">
           <h2 className="mb-4 text-lg font-bold text-gray-950">Requires action ({pending.length})</h2>
           <div className="space-y-4">
-            {pending.map((claim) => (
+            {pending.map((claim: Claim) => (
               <article key={claim.id} className="rounded-md border border-amber-200 bg-white shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-4 border-b border-gray-100 px-5 py-4">
                   <div>
@@ -90,7 +90,7 @@ export default async function AdminClaimsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {claims.map((claim) => (
+                  {claims.map((claim: Claim) => (
                     <tr key={claim.id} className="hover:bg-gray-50">
                       <td className="px-5 py-3 font-medium text-gray-950">
                         {claim.member.firstName} {claim.member.lastName}
