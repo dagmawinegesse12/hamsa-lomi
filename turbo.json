@@ -1,6 +1,14 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["SKIP_ENV_VALIDATION"],
+  "globalEnv": [
+    "SKIP_ENV_VALIDATION",
+    "DATABASE_URL",
+    "DIRECT_URL",
+    "AUTH_SECRET",
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
