@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
-import type { GalleryPhoto } from "@prisma/client";
+type GalleryPhoto = { id: string; url: string; caption: string | null; sortOrder: number };
 import { deletePhoto } from "../actions";
 
 export function PhotoGrid({ photos }: { photos: GalleryPhoto[] }) {

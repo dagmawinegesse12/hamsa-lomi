@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { GalleryEvent } from "@prisma/client";
+type GalleryEvent = { id: string; title: string; titleAm: string | null; date: Date; location: string | null; isPublic: boolean };
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { updateGalleryEvent, deleteGalleryEvent } from "../actions";
