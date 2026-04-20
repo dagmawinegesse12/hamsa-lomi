@@ -115,7 +115,7 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
             <section className="rounded-md border border-gray-200 bg-white p-5">
               <h3 className="mb-4 text-lg font-bold text-gray-950">Dependents</h3>
               <div className="divide-y divide-gray-100">
-                {member.dependents.map((dep) => (
+                {member.dependents.map((dep: (typeof member.dependents)[number]) => (
                   <div key={dep.id} className="flex items-center justify-between py-3 text-sm">
                     <span className="font-medium text-gray-950">{dep.name}</span>
                     <span className="text-gray-500">{dep.relationship}</span>
@@ -136,7 +136,7 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
               {member.payments.length === 0 && (
                 <p className="px-5 py-4 text-sm text-gray-500">No payments recorded.</p>
               )}
-              {member.payments.map((p) => (
+              {member.payments.map((p: (typeof member.payments)[number]) => (
                 <div key={p.id} className="flex items-center justify-between px-5 py-3 text-sm">
                   <span className="text-gray-700">{p.period}</span>
                   <span className="font-semibold text-teal-700">{formatCurrency(Number(p.amount))}</span>
@@ -153,7 +153,7 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
               {member.claims.length === 0 && (
                 <p className="px-5 py-4 text-sm text-gray-500">No claims filed.</p>
               )}
-              {member.claims.map((c) => (
+              {member.claims.map((c: (typeof member.claims)[number]) => (
                 <div key={c.id} className="flex items-center justify-between px-5 py-3 text-sm">
                   <div>
                     <p className="font-medium text-gray-950">{c.deceasedName}</p>

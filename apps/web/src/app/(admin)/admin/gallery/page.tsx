@@ -51,7 +51,7 @@ export default async function GalleryAdminPage() {
             </div>
           ) : (
             <ul className="divide-y divide-gray-100">
-              {events.map((ev) => (
+              {events.map((ev: (typeof events)[number]) => (
                 <li key={ev.id}>
                   <Link
                     href={`/admin/gallery/${ev.id}`}

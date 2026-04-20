@@ -42,7 +42,7 @@ export default async function AdminDashboardPage() {
           <div className="divide-y divide-gray-100">
             {data.recentPayments.length === 0 ? (
               <p className="px-5 py-8 text-sm text-gray-400 text-center">No payments recorded yet.</p>
-            ) : data.recentPayments.map((payment) => (
+            ) : data.recentPayments.map((payment: (typeof data.recentPayments)[number]) => (
               <div className="grid gap-2 px-5 py-4 text-sm sm:grid-cols-[1fr_140px_120px]" key={payment.id}>
                 <span className="font-medium text-gray-950">{payment.member.firstName} {payment.member.lastName}</span>
                 <span className="text-gray-600">{payment.period}</span>
@@ -54,7 +54,7 @@ export default async function AdminDashboardPage() {
         <section className="rounded-md border border-gray-200 bg-white p-5">
           <h3 className="text-lg font-bold text-gray-950">Upcoming meetings</h3>
           <div className="mt-4 space-y-4">
-            {data.upcomingMeetings.map((meeting) => (
+            {data.upcomingMeetings.map((meeting: (typeof data.upcomingMeetings)[number]) => (
               <div className="rounded-md border border-gray-200 p-4" key={meeting.id}>
                 <p className="text-sm font-semibold text-gray-950">{meeting.type} meeting</p>
                 <p className="mt-1 text-sm text-gray-600">{formatDate(meeting.date)}</p>
