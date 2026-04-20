@@ -105,10 +105,11 @@ model Organization {
   logoUrl      String?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
-  members      Member[]
-  tiers        MembershipTier[]
-  meetings     Meeting[]
+  members       Member[]
+  tiers         MembershipTier[]
+  meetings      Meeting[]
   announcements Announcement[]
+  galleryEvents GalleryEvent[]
 }
 
 model User {
@@ -425,6 +426,35 @@ model Announcement {
   @@index([organizationId, publishedAt])
   @@index([organizationId, announcementType])
   @@index([authorId])
+}
+
+model GalleryEvent {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String         @db.Uuid
+  title          String
+  titleAm        String?
+  date           DateTime
+  location       String?
+  isPublic       Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  photos         GalleryPhoto[]
+
+  @@index([organizationId, isPublic, date])
+}
+
+model GalleryPhoto {
+  id        String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId   String       @db.Uuid
+  url       String
+  caption   String?
+  sortOrder Int          @default(0)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  event     GalleryEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, sortOrder])
 }
 
 model ExpenseRecord {

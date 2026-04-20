@@ -96,7 +96,21 @@ export const publicSite = {
       name: "Mesfin Tadesse Debella",
       dates: null,
       photoUrl: "https://api.hamsalomi.org/uploads/1765446937045.jpg",
-      excerpt: "The entire Hamsa Lomi family is saddened by the loss of Mesfin Tadesse Debella.",
+      excerpt: "The entire Hamsa Lomi family is saddened by the loss of Mesfin Tadesse Debella. A loving, caring, and friendly person whose kindness will always be remembered.",
+      amharic: null
+    },
+    {
+      name: "Solomon Nigus",
+      dates: null,
+      photoUrl: "https://api.hamsalomi.org/uploads/1773869975934.jpg",
+      excerpt: "We express our grief over the passing of our association member Mr. Solomon Nigus and wish comfort and strength to his family during this difficult time.",
+      amharic: "አቶ ሰለሞን ንጉስ"
+    },
+    {
+      name: "Amina (Elsa) Buni",
+      dates: null,
+      photoUrl: "https://api.hamsalomi.org/uploads/1774049498952.jpg",
+      excerpt: "The Hamsa Lomi Board is deeply saddened by the passing of our member Ms. Amina (Elsa) Buni. We extend our heartfelt condolences to her family and all who knew her. May God grant her eternal peace.",
       amharic: null
     }
   ],
@@ -194,13 +208,14 @@ export const publicSite = {
 };
 
 export const publicNavItems = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Board Members", href: "/board" },
-  { label: "Membership", href: "/membership" },
-  { label: "Benefits", href: "/benefits" },
-  { label: "Tributes", href: "/tributes" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Bylaws", href: "/bylaws" },
-  { label: "Contact", href: "/contact" }
+  { label: "Home",         labelAm: "መነሻ",                  href: "/" },
+  { label: "About",        labelAm: "ስለ እኛ",                href: "/about" },
+  { label: "Board Members",labelAm: "የቦርድ አባላት",           href: "/board" },
+  { label: "Membership",   labelAm: "አባልነት",                href: "/membership" },
+  { label: "Benefits",     labelAm: "ጥቅማ ጥቅሞች",          href: "/benefits" },
+  { label: "Gallery",      labelAm: "ፎቶዎች",                 href: "/gallery" },
+  { label: "Tributes",     labelAm: "መታሰቢያዎች",             href: "/tributes" },
+  { label: "FAQ",          labelAm: "ተደጋጋሚ ጥያቄዎች",       href: "/faq" },
+  { label: "Bylaws",       labelAm: "ደንብና መመሪያ",           href: "/bylaws" },
+  { label: "Contact",      labelAm: "አድራሻ",                 href: "/contact" },
 ];

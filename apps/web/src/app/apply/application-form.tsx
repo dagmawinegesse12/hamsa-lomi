@@ -82,7 +82,7 @@ export function ApplicationForm() {
       const payload: ApplicationData = {
         ...applicant,
         maritalStatus: applicant.maritalStatus as ApplicationData["maritalStatus"],
-        dependents: dependents.filter((d) => d.name),
+        dependents: dependents.filter((d) => d.name) as ApplicationData["dependents"],
         ...beneficiaries,
         signatureName: acknowledgement.signatureName,
         agreedToTerms: true,

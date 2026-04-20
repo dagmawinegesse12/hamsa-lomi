@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Download, FileText, Users, ChevronRight } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
 import { PublicShell } from "@/components/public/public-shell";
+import { strings, type Lang } from "@/lib/i18n/strings";
 
 export const metadata = {
   title: "Bylaws",
@@ -22,13 +23,16 @@ const articles = [
   { num: "XI",   title: "Miscellaneous",               summary: "Fiscal year (January–December), conflict-of-interest policies, whistleblower protection, and corporate seal." },
 ];
 
-export default function BylawsPage() {
+export default function BylawsPage({ searchParams }: { searchParams: { lang?: string } }) {
+  const lang: Lang = searchParams.lang === "am" ? "am" : "en";
+  const t = strings[lang].bylaws;
+
   return (
-    <PublicShell>
+    <PublicShell lang={lang}>
       <PageHero
-        eyebrow="Governance"
-        title="Bylaws of Hamsa Lomi"
-        body="Official governing document of Hamsa Lomi Ethiopian Association, a Tennessee Nonprofit Corporation. Adopted January 30, 2024."
+        eyebrow={t.eyebrow}
+        title={t.heroTitle}
+        body={t.heroBody}
       />
 
       <section className="mx-auto max-w-4xl px-4 sm:px-6 py-12 sm:py-14">
@@ -50,14 +54,14 @@ export default function BylawsPage() {
             className="flex shrink-0 items-center gap-2 rounded-md bg-gold-500 px-5 py-2.5 text-sm font-bold text-ink hover:bg-gold-400 transition-colors"
           >
             <Download className="h-4 w-4" />
-            Download PDF
+            {t.download}
           </a>
         </div>
 
         {/* Article index */}
         <div className="mb-4">
-          <h2 className="font-display text-lg font-bold text-ink">Table of Contents</h2>
-          <p className="mt-1 text-sm text-ink-muted">Click an article to view the full text in the downloaded PDF.</p>
+          <h2 className="font-display text-lg font-bold text-ink">{t.toc}</h2>
+          <p className="mt-1 text-sm text-ink-muted">{t.tocSub}</p>
         </div>
 
         <dl className="space-y-3">
@@ -76,7 +80,7 @@ export default function BylawsPage() {
 
         {/* Signed by */}
         <div className="mt-8 rounded-lg border border-gray-200 bg-gray-50 px-5 py-4 text-sm text-ink-muted">
-          <p>These bylaws were approved and adopted by the Board of Directors on <strong className="text-ink">January 30, 2024</strong>.</p>
+          <p>{t.adopted} <strong className="text-ink">January 30, 2024</strong>.</p>
           <div className="mt-2 flex flex-wrap gap-6">
             <span><strong className="text-ink">President:</strong> Abdul Boulett</span>
             <span><strong className="text-ink">Secretary:</strong> Behabtu Wolde Senbet</span>
@@ -89,15 +93,15 @@ export default function BylawsPage() {
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-gold-50">
               <Users className="h-5 w-5 text-gold-600" />
             </div>
-            <h2 className="font-display text-xl font-bold text-ink">Proxy form</h2>
+            <h2 className="font-display text-xl font-bold text-ink">{t.proxyTitle}</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-              Members may appoint another member to attend, act, and vote on their behalf at a General Assembly meeting.
+              {t.proxyBody}
             </p>
             <Link
               className="mt-5 inline-flex items-center gap-1 rounded-md border border-gray-300 px-4 py-2.5 text-sm font-semibold text-ink hover:bg-gray-50 transition-colors"
-              href="/contact"
+              href={lang === "am" ? "/contact?lang=am" : "/contact"}
             >
-              Request proxy form <ChevronRight className="h-4 w-4" />
+              {t.requestProxy} <ChevronRight className="h-4 w-4" />
             </Link>
           </article>
 
@@ -105,9 +109,9 @@ export default function BylawsPage() {
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-green-50">
               <Download className="h-5 w-5 text-green-700" />
             </div>
-            <h2 className="font-display text-xl font-bold text-ink">Download bylaws</h2>
+            <h2 className="font-display text-xl font-bold text-ink">{t.downloadTitle}</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-              Save a copy of the official bylaws to your device for reference at meetings or when reviewing membership rules.
+              {t.downloadBody}
             </p>
             <a
               href="/bylaws.pdf"
@@ -115,7 +119,7 @@ export default function BylawsPage() {
               className="mt-5 inline-flex items-center gap-2 rounded-md bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-800 transition-colors"
             >
               <Download className="h-4 w-4" />
-              Download PDF
+              {t.download}
             </a>
           </article>
         </div>

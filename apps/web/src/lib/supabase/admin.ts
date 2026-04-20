@@ -13,21 +13,23 @@ export function createSupabaseAdminClient() {
   });
 }
 
-const BUCKET = "announcements";
-
-export async function uploadAnnouncementImage(file: File | Blob): Promise<string> {
-  const fileName = (file as File).name ?? "upload";
+async function uploadToStorage(bucket: string, file: Blob): Promise<string> {
+  const fileName = (file as unknown as { name?: string }).name ?? "upload";
   const supabase = createSupabaseAdminClient();
-
   const ext = fileName.split(".").pop() ?? "jpg";
   const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-
   const { error } = await supabase.storage
-    .from(BUCKET)
+    .from(bucket)
     .upload(path, file, { contentType: file.type, upsert: false });
-
-  if (error) throw new Error(`Image upload failed: ${error.message}`);
-
-  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  if (error) throw new Error(`Upload failed: ${error.message}`);
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return data.publicUrl;
+}
+
+export async function uploadAnnouncementImage(file: Blob): Promise<string> {
+  return uploadToStorage("announcements", file);
+}
+
+export async function uploadGalleryPhoto(file: Blob): Promise<string> {
+  return uploadToStorage("gallery", file);
 }

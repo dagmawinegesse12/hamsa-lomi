@@ -47,7 +47,7 @@ function AnnouncementItem({ announcement }: { announcement: Announcement }) {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const isDeathNotice = announcement.announcementType === "DEATH_NOTICE";
-  const typeInfo = TYPE_LABELS[announcement.announcementType] ?? TYPE_LABELS.GENERAL;
+  const typeInfo = TYPE_LABELS[announcement.announcementType] ?? { label: "General", color: "bg-green-50 text-green-800 border-green-200" };
   const publishInfo = getPublishLabel(announcement.publishedAt);
 
   const currentImage = removeImage ? null : (preview ?? announcement.imageUrl);

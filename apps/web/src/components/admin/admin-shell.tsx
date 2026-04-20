@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   LayoutDashboard, Users, CreditCard, FileText, Bell,
   Calendar, BarChart2, Megaphone, ClipboardList, Receipt,
-  Menu, X, LogOut
+  Images, Menu, X, LogOut
 } from "lucide-react";
 import { NavLink } from "@/components/ui/nav-link";
 
@@ -18,6 +18,7 @@ const links = [
   { label: "Meetings",      href: "/admin/meetings",              icon: Calendar },
   { label: "Reports",       href: "/admin/reports",               icon: BarChart2 },
   { label: "Announcements", href: "/admin/announcements",         icon: Megaphone },
+  { label: "Gallery",       href: "/admin/gallery",               icon: Images },
   { label: "Audit Log",     href: "/admin/audit-log",             icon: ClipboardList },
   { label: "Expenses",      href: "/admin/expenses",              icon: Receipt },
 ];
