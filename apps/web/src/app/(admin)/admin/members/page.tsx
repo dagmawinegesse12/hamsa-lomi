@@ -60,7 +60,7 @@ export default async function MembersPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {members.map((member: (typeof members)[number]) => {
-                const balance = member.schedules.reduce((total, schedule) => total + Number(schedule.amount), 0);
+                const balance = member.schedules.reduce((total: number, schedule) => total + Number(schedule.amount), 0);
                 return (
                   <tr className="hover:bg-gray-50" key={member.id}>
                     <td className="px-5 py-4">

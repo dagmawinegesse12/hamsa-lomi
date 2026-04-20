@@ -44,7 +44,7 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
   const { organization, member, tiers } = await getMemberData(params.id);
   if (!member) notFound();
 
-  const openBalance = member.schedules.reduce((sum, s) => sum + Number(s.amount), 0);
+  const openBalance = member.schedules.reduce((sum: number, s) => sum + Number(s.amount), 0);
 
   return (
     <AdminShell organizationName={organization?.name} title={`${member.firstName} ${member.lastName}`}>

@@ -135,14 +135,15 @@ async function getDbEvents(): Promise<EventGallery[]> {
       orderBy: { date: "desc" },
       include: { photos: { orderBy: { sortOrder: "asc" } } },
     });
+    type Row = (typeof rows)[number];
     return rows
-      .filter((ev) => ev.photos.length > 0)
-      .map((ev) => ({
+      .filter((ev: Row) => ev.photos.length > 0)
+      .map((ev: Row) => ({
         event: ev.title,
         eventAm: ev.titleAm ?? ev.title,
         date: ev.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
         location: ev.location ?? "",
-        photos: ev.photos.map((p) => p.url),
+        photos: ev.photos.map((p: (typeof ev.photos)[number]) => p.url),
       }));
   } catch {
     return [];

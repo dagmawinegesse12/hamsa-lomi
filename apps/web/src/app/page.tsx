@@ -218,7 +218,7 @@ export default async function HomePage({ searchParams }: { searchParams: { lang?
                   <p className="rounded-lg border border-dashed border-gray-200 px-5 py-8 text-center text-sm text-ink-muted">
                     {t.noPublicAnnouncements}
                   </p>
-                ) : stats.announcements.map((a) => {
+                ) : stats.announcements.map((a: (typeof stats.announcements)[number]) => {
                   const isDeathNotice = a.announcementType === "DEATH_NOTICE";
                   const isUrgent = a.announcementType === "URGENT";
                   return (
@@ -300,7 +300,7 @@ export default async function HomePage({ searchParams }: { searchParams: { lang?
                   <p className="rounded-lg border border-dashed border-gray-200 px-5 py-8 text-center text-sm text-ink-muted">
                     {t.noUpcomingMeetings}
                   </p>
-                ) : stats.meetings.map((m) => (
+                ) : stats.meetings.map((m: (typeof stats.meetings)[number]) => (
                   <article key={m.id} className="card-warm p-5">
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <p className="font-display text-base font-bold text-ink capitalize">
