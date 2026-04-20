@@ -1,0 +1,126 @@
+/* ── Google Fonts ────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Barlow:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ───────────────────────────────────────────────────────── */
+:root {
+  --font-display: "Playfair Display";
+  --font-sans:    "Barlow";
+
+  /* Ethiopian palette */
+  --et-green:  #155836;
+  --et-gold:   #D4A017;
+  --et-red:    #C81E1E;
+  --et-cream:  #FAF6EF;
+  --et-dark:   #1A1A0F;
+  --et-muted:  #6B6355;
+
+  /* Legacy shadcn tokens */
+  --background: 40 30% 97%;
+  --foreground:  60 20% 8%;
+  --border:      40 20% 88%;
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    background: var(--et-cream);
+    min-height: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--et-cream);
+    color: var(--et-dark);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button, input, select, textarea { font: inherit; }
+
+  /* Focus ring using gold */
+  :focus-visible {
+    outline: 2px solid var(--et-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Headings use display font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display), Georgia, serif;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* ── Utilities ───────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Ethiopian flag tricolor stripe */
+  .flag-stripe {
+    background: linear-gradient(
+      to right,
+      var(--et-green) 33.33%,
+      var(--et-gold)  33.33% 66.66%,
+      var(--et-red)   66.66%
+    );
+  }
+
+  /* Vertical flag stripe (left border accent) */
+  .flag-stripe-v {
+    background: linear-gradient(
+      to bottom,
+      var(--et-green) 33.33%,
+      var(--et-gold)  33.33% 66.66%,
+      var(--et-red)   66.66%
+    );
+  }
+
+  .font-display { font-family: var(--font-display), Georgia, serif; }
+
+  /* Warm card base */
+  .card-warm {
+    background: #FFFFFF;
+    border: 1px solid #E5E2DA;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(26,26,15,0.06);
+  }
+
+  /* Gold left-border accent card */
+  .card-accent {
+    background: #FFFFFF;
+    border: 1px solid #E5E2DA;
+    border-left: 3px solid var(--et-gold);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(26,26,15,0.06);
+  }
+
+  /* Drawer overlay */
+  .drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 15, 0.55);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+  }
+}
+
+/* ── Drawer slide animation ──────────────────────────────────────────────── */
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes slideOutLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+.drawer-enter { animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.drawer-exit  { animation: slideOutLeft 0.2s ease-in forwards; }

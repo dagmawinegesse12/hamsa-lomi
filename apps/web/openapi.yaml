@@ -1,0 +1,128 @@
+openapi: 3.1.0
+info:
+  title: Hamsa Lomi Edir Platform API
+  version: 1.0.0
+servers:
+  - url: /api/v1
+components:
+  schemas:
+    ApiError:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    ApiEnvelope:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+        data: {}
+        error:
+          $ref: "#/components/schemas/ApiError"
+paths:
+  /members:
+    get:
+      summary: List members
+      responses:
+        "200":
+          description: Member list
+    post:
+      summary: Create member
+      responses:
+        "200":
+          description: Created member
+  /payments:
+    get:
+      summary: List payments
+      responses:
+        "200":
+          description: Payment list
+    post:
+      summary: Record a payment
+      responses:
+        "200":
+          description: Created payment
+  /claims:
+    get:
+      summary: List death benefit claims
+      responses:
+        "200":
+          description: Claim list
+    post:
+      summary: File a death benefit claim
+      responses:
+        "200":
+          description: Created claim
+  /notifications:
+    get:
+      summary: List notification history
+      responses:
+        "200":
+          description: Notification list
+    post:
+      summary: Compose and enqueue a notification
+      responses:
+        "200":
+          description: Created notification
+  /notifications/{id}/status:
+    get:
+      summary: Notification delivery status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Recipient delivery statuses
+  /meetings:
+    get:
+      summary: List meetings
+      responses:
+        "200":
+          description: Meeting list
+    post:
+      summary: Create meeting
+      responses:
+        "200":
+          description: Created meeting
+  /reports:
+    get:
+      summary: Monthly financial report
+      responses:
+        "200":
+          description: Report summary
+  /audit-logs:
+    get:
+      summary: List immutable audit logs
+      responses:
+        "200":
+          description: Audit logs
+  /announcements:
+    get:
+      summary: List announcements
+      responses:
+        "200":
+          description: Announcement list
+    post:
+      summary: Create announcement
+      responses:
+        "200":
+          description: Created announcement
+  /expenses:
+    get:
+      summary: List expenses
+      responses:
+        "200":
+          description: Expense list
+    post:
+      summary: Create expense
+      responses:
+        "200":
+          description: Created expense

@@ -1,0 +1,8 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "payments": "Payments",
+    "claims": "Claims",
+    "notifications": "Notifications"
+  }
+}

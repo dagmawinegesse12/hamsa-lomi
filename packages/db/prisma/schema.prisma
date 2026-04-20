@@ -1,0 +1,445 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  TREASURER
+  SECRETARY
+  MEMBER
+}
+
+enum MemberStatus {
+  ACTIVE
+  SUSPENDED
+  EXPELLED
+  DECEASED
+}
+
+enum Relationship {
+  MEMBER
+  SPOUSE
+  CHILD
+  PARENT
+  SIBLING
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  MOBILE_MONEY
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+  WAIVED
+}
+
+enum PenaltyStatus {
+  PENDING
+  WAIVED
+  PAID
+}
+
+enum ClaimStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  PAID
+  REJECTED
+}
+
+enum DocumentType {
+  DEATH_CERTIFICATE
+  ID
+  PHOTO
+}
+
+enum MeetingType {
+  GENERAL
+  BOARD
+  EMERGENCY
+}
+
+enum AnnouncementType {
+  GENERAL
+  DEATH_NOTICE
+  EVENT
+  URGENT
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  PUSH
+  IN_APP
+}
+
+enum AudienceType {
+  ALL
+  INDIVIDUAL
+  GROUP
+}
+
+enum DeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model Organization {
+  id           String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  bylawsUrl    String?
+  foundedDate  DateTime?
+  locale       String           @default("en")
+  logoUrl      String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  members      Member[]
+  tiers        MembershipTier[]
+  meetings     Meeting[]
+  announcements Announcement[]
+}
+
+model User {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String?
+  email          String         @unique
+  hashedPassword String?
+  image          String?
+  role           Role           @default(MEMBER)
+  isActive       Boolean        @default(true)
+  emailVerified  DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  accounts       Account[]
+  sessions       Session[]
+  member         Member?
+  payments       DuePayment[]   @relation("RecordedPayments")
+  approvedClaims DeathClaim[]   @relation("ApprovedClaims")
+  notifications  Notification[] @relation("TriggeredNotifications")
+  announcements  Announcement[]
+  expenses       ExpenseRecord[]
+  auditLogs      AuditLog[]     @relation("ActorAuditLogs")
+}
+
+model Member {
+  id                String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId    String                  @db.Uuid
+  userId            String?                 @unique @db.Uuid
+  tierId            String?                 @db.Uuid
+  firstName         String
+  lastName          String
+  phone             String
+  address           String
+  joinDate          DateTime
+  status            MemberStatus            @default(ACTIVE)
+  photoUrl          String?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  organization      Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user              User?                   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  tier              MembershipTier?         @relation(fields: [tierId], references: [id], onDelete: SetNull)
+  dependents        Dependent[]
+  payments          DuePayment[]
+  schedules         DueSchedule[]
+  penalties         PenaltyRecord[]
+  claims            DeathClaim[]
+  meetingAttendance MeetingAttendance[]
+  recipients        NotificationRecipient[]
+
+  @@index([organizationId, status])
+  @@index([tierId])
+  @@index([lastName, firstName])
+}
+
+model Dependent {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId       String       @db.Uuid
+  name           String
+  relationship   Relationship
+  dateOfBirth    DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  member         Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+}
+
+model MembershipTier {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  name           String
+  monthlyDue     Decimal  @db.Decimal(12, 2)
+  benefitAmounts Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  members        Member[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId])
+}
+
+model DuePayment {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId       String        @db.Uuid
+  period         String        @db.VarChar(7)
+  amount         Decimal       @db.Decimal(12, 2)
+  paidAt         DateTime
+  paymentMethod  PaymentMethod
+  receiptNumber  String        @unique
+  recordedById   String        @db.Uuid
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  member         Member        @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  recordedBy     User          @relation("RecordedPayments", fields: [recordedById], references: [id], onDelete: Restrict)
+
+  @@unique([memberId, period])
+  @@index([memberId, period])
+  @@index([paidAt])
+}
+
+model DueSchedule {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId  String        @db.Uuid
+  period    String        @db.VarChar(7)
+  amount    Decimal       @db.Decimal(12, 2)
+  dueDate   DateTime
+  status    PaymentStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  member    Member        @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, period])
+  @@index([memberId, period, status])
+  @@index([dueDate])
+}
+
+model PenaltyRecord {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId      String        @db.Uuid
+  period        String        @db.VarChar(7)
+  penaltyAmount Decimal       @db.Decimal(12, 2)
+  status        PenaltyStatus @default(PENDING)
+  waiverReason  String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  member        Member        @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, period])
+  @@index([memberId, status])
+}
+
+model DeathClaim {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId       String          @db.Uuid
+  deceasedName   String
+  relationship   Relationship
+  dateOfDeath    DateTime
+  claimStatus    ClaimStatus     @default(SUBMITTED)
+  benefitAmount  Decimal         @db.Decimal(12, 2)
+  approvedById   String?         @db.Uuid
+  paidAt         DateTime?
+  reviewNotes    String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  member         Member          @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  approvedBy     User?           @relation("ApprovedClaims", fields: [approvedById], references: [id], onDelete: SetNull)
+  documents      ClaimDocument[]
+
+  @@index([memberId, claimStatus])
+  @@index([claimStatus])
+  @@index([dateOfDeath])
+}
+
+model ClaimDocument {
+  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId      String       @db.Uuid
+  fileUrl      String
+  documentType DocumentType
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  claim        DeathClaim   @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@index([claimId])
+}
+
+model Meeting {
+  id              String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String              @db.Uuid
+  date            DateTime
+  type            MeetingType
+  agenda          String
+  minutesUrl      String?
+  attendanceCount Int                 @default(0)
+  isPublic        Boolean             @default(false)
+  publishedAt     DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  organization    Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  attendance      MeetingAttendance[]
+
+  @@index([organizationId, date])
+  @@index([organizationId, isPublic, publishedAt])
+  @@index([type])
+}
+
+model MeetingAttendance {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  meetingId String   @db.Uuid
+  memberId  String   @db.Uuid
+  attended  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([meetingId, memberId])
+  @@index([memberId])
+}
+
+model Notification {
+  id             String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title          String
+  body           String
+  channels       NotificationChannel[]
+  triggeredById  String                  @db.Uuid
+  sentAt         DateTime?
+  scheduledFor   DateTime?
+  audienceType   AudienceType
+  templateKey    String?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  triggeredBy    User                    @relation("TriggeredNotifications", fields: [triggeredById], references: [id], onDelete: Restrict)
+  recipients     NotificationRecipient[]
+
+  @@index([sentAt])
+  @@index([audienceType])
+  @@index([triggeredById])
+}
+
+model NotificationRecipient {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  notificationId String         @db.Uuid
+  memberId       String         @db.Uuid
+  deliveredAt    DateTime?
+  readAt         DateTime?
+  status         DeliveryStatus @default(PENDING)
+  failureReason  String?
+  retryCount     Int            @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  notification   Notification   @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  member         Member         @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([notificationId, memberId])
+  @@index([memberId, status])
+  @@index([status])
+}
+
+model AuditLog {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  actorId    String?  @db.Uuid
+  action     String
+  entityType String
+  entityId   String
+  before     Json?
+  after      Json?
+  ipAddress  String?
+  timestamp  DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  actor      User?    @relation("ActorAuditLogs", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([timestamp])
+}
+
+model Account {
+  id                String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Announcement {
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId   String           @db.Uuid
+  title            String
+  body             String
+  announcementType AnnouncementType @default(GENERAL)
+  imageUrl         String?
+  publishedAt      DateTime?
+  authorId         String           @db.Uuid
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  organization     Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  author           User             @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, publishedAt])
+  @@index([organizationId, announcementType])
+  @@index([authorId])
+}
+
+model ExpenseRecord {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category    String
+  amount      Decimal  @db.Decimal(12, 2)
+  description String
+  receiptUrl  String?
+  recordedById String  @db.Uuid
+  date        DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  recordedBy  User     @relation(fields: [recordedById], references: [id], onDelete: Restrict)
+
+  @@index([category])
+  @@index([date])
+  @@index([recordedById])
+}
